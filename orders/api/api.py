@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException
@@ -15,8 +16,18 @@ from orders.api.schemas import (
 ORDERS = []
 
 @app.get('/orders', response_model=GetOrdersSchema)
-def get_orders():
-  return {"orders": ORDERS}
+def get_orders(cancelled: Optional[bool] = None, limit: Optional[int] = None):
+  if cancelled is None and limit is None:
+    return {"orders": ORDERS}
+  query_set = ORDERS[:]
+  if cancelled is not None:
+    if cancelled:
+      query_set = filter(lambda order: order['status'] == 'cancelled', query_set)
+    else:
+      query_set = filter(lambda order: order['status'] != 'cancelled', query_set)
+  if limit is not None and len(query_set) > limit:
+    return { "orders": query_set[:limit] }
+  return { "orders": query_set }
 
 @app.post(
   '/orders', 

@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, conlist, conint, validator
+from pydantic import BaseModel, Extra, conlist, conint, validator
 
 class Size(Enum):
   small = "small"
@@ -22,6 +22,9 @@ class OrderItemSchema(BaseModel):
   size: Size
   quantity: Optional[conint(ge=1, strict=True)] = 1
 
+  class Config:
+    extra = Extra.forbid
+
   @validator('quantity')
   def quantity_non_nullable(cls, value):
     assert value is not None, 'quantity may not be None'
@@ -29,6 +32,9 @@ class OrderItemSchema(BaseModel):
 
 class CreateOrderSchema(BaseModel):
   order: conlist(OrderItemSchema, min_items=1)
+
+  class Config:
+    extra = Extra.forbid
 
 class GetOrderSchema(CreateOrderSchema):
   id: UUID
