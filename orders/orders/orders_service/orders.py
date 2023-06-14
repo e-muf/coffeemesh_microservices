@@ -77,7 +77,7 @@ class Order:
   def dict(self):
     return {
       'id': self.id,
-      'order': [item.dict() for ite in self.items],
+      'order': [item.dict() for item in self.items],
       'status': self.status,
       'created': self.created
     }
