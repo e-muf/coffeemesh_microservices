@@ -311,6 +311,8 @@ pyrightconfig.json
 .history
 .ionide
 
+*.pem
+
 node_modules/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,flask,macos,visualstudiocode
